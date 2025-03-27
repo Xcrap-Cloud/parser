@@ -127,3 +127,15 @@ This `shape` is used to declare the form in which the information will be extrac
         - JsonParsingModel with nested HtmlParsingModel
         - HtmlParsing model with nested JsonParsingModel
 
+## 🤝 Contributing
+
+- Want to contribute? Follow these steps:
+- Fork the repository.
+- Create a new branch (git checkout -b feature-new).
+- Commit your changes (git commit -m 'Add new feature').
+- Push to the branch (git push origin feature-new).
+- Open a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License.
