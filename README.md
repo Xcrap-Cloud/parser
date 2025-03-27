@@ -25,7 +25,7 @@ Xcrap Parser is a package of the Xcrap framework, it was developed to take care 
 Installing it is very simple, you can use NPM or any other package manager of your choice: such as PNPM, Yarn, etc.
 
 ```cmd
-npm i @xcrap/parser
+npm i @xcrap/parser node-html-parser jmespath
 ```
 
 ---
