@@ -1,19 +1,3 @@
-**Temas para abordar:**
-    - HtmlParsingModel
-        - query
-        - extractor
-        - default
-        - multiple
-
-    - JsonParsingModel
-        - query
-    - Nested models
-        - model
-        - multiple
-    - Intercalating models of different types
-        - JsonParsingModel with nested HtmlParsingModel
-        - HtmlParsing model with nested JsonParsingModel
-
 # 🕷️ Xcrap Parser: Parsing HTML and JSON using declarative models
 
 Xcrap Parser is a package of the Xcrap framework, it was developed to take care of the data extraction part of text files (currently supporting only HTML and JSON) using declarative models.
