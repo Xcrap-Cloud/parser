@@ -43,13 +43,22 @@ import { HtmlParser, extract } from "@xcrap/parser"
 ### Data extraction without using models
 
 ```ts
-// Assuming you have already instantiated the HtmlParser
-// parseFirst() searches and extracts something from the first element found
-// extract() is a generic extraction function, you can use some that are already created and ready to use by importing them from the same location :)
-const title = await parser.parseFirst({ query: "title", extractor: extract("innerText") })
+import { HtmlParser, extract } from "@xcrap/parser"
 
-// parseMany() fetches all the elements it finds with a query (you can limit the number of results) and uses the extractor to grab the data
-const links = await parser.parseMany({ query: "a", extractor: extract("href", true) })
+;(async () => {
+    const html = `<html><head><title>Page Title</title></head><body><a href="https://example.com">Link</a></body></html>`
+    const parser = new HtmlParser(html)
+
+    // parseFirst() searches and extracts something from the first element found
+    // extract(key: string, isAttribute?: boolean) is a generic extraction function, you can use some that are already created and ready to use by importing them from the same location :)
+    const title = await parser.parseFirst({ query: "title", extractor: extract("innerText") })
+
+    // parseMany() fetches all the elements it finds with a query (you can limit the number of results) and uses the extractor to grab the data
+    const links = await parser.parseMany({ query: "a", extractor: extract("href", true) })
+
+    console.log(title) // "Page Title"
+    console.log(links) // ["https://example.com"]
+})();
 ```
 
 ### Data extraction with using models
@@ -57,7 +66,7 @@ const links = await parser.parseMany({ query: "a", extractor: extract("href", tr
 ParsingModels are decoupled enough that you don't have to rely on using Parser instances, but we'll still use them:
 
 ```ts
-import { HtmlParser, HtmlParsingModel, extract } from "../src"
+import { HtmlParser, HtmlParsingModel, extract } from "@xcrap/parser"
 
 ;(async () => {
     const html = `<html><body><h1>Heading</h1><div><p id="id">1</p><p id="name">Name</p><p class="age">23</p></div></body></html>`
@@ -84,22 +93,37 @@ import { HtmlParser, HtmlParsingModel, extract } from "../src"
 
     const data = await parser.extractFirst({ model: rootParsingModel })
 
-    console.log(data)
+    console.log(data) // { heading: 'Heading', id: '1', name: 'Name', age: '23' }
 })();
 ```
 
-Running this code, you should get the following result:
+## 🧠 Create your own Parser: Concepts
 
-```js
-{ heading: 'Heading', id: '1', name: 'Name', age: '23' }
-```
+### What is a Parser?
+
+A Parser for this library is a class that deals in some way with a file type, loads that file, and may or may not have some methods to easily extract data.
+
+A parser has a default method called `parseModel` which is a wrapper that takes a `ParsingModel` and calls the `parse()` method providing the internal `source` property.
+
+### What is a ParsingModel?
+
+A Parsing Model is a class that receives a `shape` in its constructor and stores it as a property. It must have a method called `parse()` that will receive a `source`, which is the code/text that contains the information to be extracted.
+
+This `shape` is used to declare the form in which the information will be extracted from the `source`.
 
 **Temas para abordar:**
-- ParsingModel Concept
-    - Query
-    - Extractor
-    - Model field default values
-    - Getting result as array of objects
+    - HtmlParsingModel
+        - query
+        - extractor
+        - default
+        - multiple
+
+    - JsonParsingModel
+        - query
     - Nested models
+        - model
+        - multiple
     - Intercalating models of different types
+        - JsonParsingModel with nested HtmlParsingModel
+        - HtmlParsing model with nested JsonParsingModel
 
