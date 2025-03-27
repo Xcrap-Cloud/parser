@@ -51,7 +51,7 @@ import { HtmlParser, extract } from "@xcrap/parser"
 import { HtmlParser, extract } from "@xcrap/parser"
 
 ;(async () => {
-    const parser = HtmlParser.loadFile("./path-to-html-file.html", { encoding: "utf-8" }) // Returns an instance of HtmlParser
+    const parser = await HtmlParser.loadFile("./path-to-html-file.html", { encoding: "utf-8" }) // Returns an instance of HtmlParser
 })();
 
 ```
