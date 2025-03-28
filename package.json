@@ -1,9 +1,19 @@
 {
   "name": "@xcrap/parser",
-  "files": ["dist/*", "!/**/__tests__"],
-  "version": "0.0.2",
+  "files": [
+    "dist/*",
+    "!/**/__tests__"
+  ],
+  "version": "0.0.2-beta.1",
   "description": "Xcrap Parser is a package of the Xcrap framework, it was developed to take care of the data extraction part of text files (currently supporting only HTML and JSON) using declarative models.",
-  "keywords": ["xcrap", "parser", "web scraping", "node-html-parser", "parsel", "scrapy"],
+  "keywords": [
+    "xcrap",
+    "parser",
+    "web scraping",
+    "node-html-parser",
+    "parsel",
+    "scrapy"
+  ],
   "homepage": "https://github.com/Xcrap-Cloud/parser#readme",
   "bugs": {
     "url": "https://github.com/Xcrap-Cloud/parser/issues"
@@ -18,19 +28,24 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "test": "jest"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.2",
     "@types/jest": "^29.5.14",
     "@types/jmespath": "^0.15.2",
     "@types/node": "^22.13.14",
     "jest": "^29.7.0",
+    "rollup": "^4.37.0",
     "ts-jest": "^29.3.0",
     "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
     "typescript": "^5.8.2"
   },
-  "peerDependencies": {
+  "dependencies": {
     "jmespath": "^0.16.0",
     "node-html-parser": "^7.0.1"
   }
