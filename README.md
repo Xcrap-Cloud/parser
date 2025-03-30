@@ -93,7 +93,7 @@ import { HtmlParser, HtmlParsingModel, extract } from "@xcrap/parser"
 
     const data = await parser.extractFirst({ model: rootParsingModel })
 
-    console.log(data) // { heading: 'Heading', id: '1', name: 'Name', age: '23' }
+    console.log(data) // { heading: "Heading", id: "1", name: "Name", age: "23" }
 })();
 ```
 
