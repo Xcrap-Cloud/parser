@@ -16,7 +16,7 @@ describe("JsonParsingModel integration test", () => {
             }
         })
 
-        const data = parsingModel.parse(json)
+        const data = await parsingModel.parse(json)
 
         expect(data).toEqual({
             username: "Marcuth",
@@ -37,7 +37,7 @@ describe("JsonParsingModel integration test", () => {
             }
         })
 
-        const data = parsingModel.parse(json)
+        const data = await parsingModel.parse(json)
 
         expect(data).toEqual({
             username: "Marcuth",
@@ -45,7 +45,7 @@ describe("JsonParsingModel integration test", () => {
         })
     })
 
-    test("should throw error for invalid JSON", async () => {
+    test("should throw error for invalid JSON",  async () => {
         const invalidJson = "{ name: 'Marcuth' "
 
         const parsingModel = new JsonParsingModel({
@@ -54,6 +54,6 @@ describe("JsonParsingModel integration test", () => {
             }
         })
 
-        expect(() => parsingModel.parse(invalidJson)).toThrow(SyntaxError)
+        await expect(parsingModel.parse(invalidJson)).rejects.toThrow(SyntaxError)
     })
 })

@@ -18,7 +18,7 @@ export type JsonParsingModelShape = {
 export class JsonParsingModel implements ParsingModel {
     constructor(readonly shape: JsonParsingModelShape) {}
 
-    parse(source: string) {
+    async parse(source: string) {
         const root = JSON.parse(source)
         const data: Record<keyof typeof this.shape, any> = {}
 
@@ -28,7 +28,7 @@ export class JsonParsingModel implements ParsingModel {
             const isNestedValue = "model" in value
 
             if (isNestedValue) {
-                data[key] = this.parseNestedValue(value, root)
+                data[key] = await this.parseNestedValue(value, root)
             } else {
                 data[key] = this.parseValue(value, root)
             }
@@ -47,7 +47,7 @@ export class JsonParsingModel implements ParsingModel {
         return extractedData
     }
 
-    parseNestedValue(value: JsonParsingModelShapeValue, root: any) {
+    async parseNestedValue(value: JsonParsingModelShapeValue, root: any) {
         const extractedData = jmespath.search(root, value.query)
         const model = value.model!
         const modelIsHtmlParser = model.constructor.name === HtmlParsingModel.name
@@ -70,7 +70,7 @@ export class JsonParsingModel implements ParsingModel {
                     throw new Error(`Expected an array of strings for model parsing, but got ${typeof extractedData[0]}`)
                 }
 
-                return extractedData.map(item => model.parse(item))
+                return await Promise.all(extractedData.map(item => model.parse(item)))
             }
 
         } else {
@@ -78,7 +78,7 @@ export class JsonParsingModel implements ParsingModel {
                 throw new Error(`Expected a string for model parsing, but got ${typeof extractedData}`)
             }
 
-            return model.parse(extractedData)
+            return await model.parse(extractedData)
         }
 
         return extractedData
