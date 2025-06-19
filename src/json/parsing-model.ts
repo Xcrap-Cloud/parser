@@ -70,7 +70,11 @@ export class JsonParsingModel implements ParsingModel {
                     throw new Error(`Expected an array of strings for model parsing, but got ${typeof extractedData[0]}`)
                 }
 
-                return await Promise.all(extractedData.map(item => model.parse(item)))
+                return await Promise.all(
+                    extractedData.map(item => model.parse(
+                        JSON.stringify(item)
+                    ))
+                )
             }
 
         } else {
@@ -78,7 +82,13 @@ export class JsonParsingModel implements ParsingModel {
                 throw new Error(`Expected a string for model parsing, but got ${typeof extractedData}`)
             }
 
-            return await model.parse(extractedData)
+            if (modelIsHtmlParser) {
+                return await model.parse(extractedData)
+            }
+
+            return await model.parse(
+                JSON.stringify(extractedData)
+            )
         }
 
         return extractedData
