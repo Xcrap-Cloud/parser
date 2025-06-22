@@ -1,34 +1,13 @@
-import { Marked } from "marked"
 
-import { slugify } from "../utils/slugify"
+
 import { HtmlParser } from "../html"
-
-export type MarkdownParserDefaultOptions = {
-    generateHeadingIds?: boolean
-}
-
-export const markdownParserDefaultOptions = {
-    generateHeadingIds: true
-} satisfies MarkdownParserDefaultOptions
-
+import { mardownIt } from "./constants"
 export class MarkdownParser extends HtmlParser {
-    constructor(
-        source: string,
-        options: MarkdownParserDefaultOptions = markdownParserDefaultOptions
-    ) {
-        const marked = new Marked({
-            ...(options.generateHeadingIds && {
-                renderer: {
-                    heading(text, level) {
-                        const id = slugify(text)
-                        return `<h${level} id="${id}">${text}</h${level}>`
-                    },
-                }
-            })
-        })
+    readonly markdownSource: string
 
-        const htmlSource = marked.parse(source)
-
+    constructor(source: string) {
+        const htmlSource = mardownIt.render(source)
         super(htmlSource)
+        this.markdownSource = source
     }
 }

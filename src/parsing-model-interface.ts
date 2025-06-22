@@ -1,3 +1,3 @@
 export interface ParsingModel {
-    parse(source: string, ...args: any[]): Promise<any> | any
+    parse(source: string): Promise<any> | any
 }
