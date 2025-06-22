@@ -50,7 +50,7 @@ export class JsonParsingModel implements ParsingModel {
     async parseNestedValue(value: JsonParsingModelShapeValue, root: any) {
         const extractedData = jmespath.search(root, value.query)
         const model = value.model!
-        const modelIsHtmlParser = model.constructor.name === HtmlParsingModel.name
+        const modelIsJsonParser = model.constructor.name === JsonParsingModel.name
 
         if (extractedData === null && value.default !== undefined) {
             return value.default
@@ -65,7 +65,7 @@ export class JsonParsingModel implements ParsingModel {
                 extractedData.splice(value.limit)
             }
 
-            if (modelIsHtmlParser) {
+            if (!modelIsJsonParser) {
                 if (extractedData.some(item => typeof item !== "string")) {
                     throw new Error(`Expected an array of strings for model parsing, but got ${typeof extractedData[0]}`)
                 }
@@ -78,11 +78,11 @@ export class JsonParsingModel implements ParsingModel {
             }
 
         } else {
-            if (modelIsHtmlParser && typeof extractedData !== "string") {
+            if (!modelIsJsonParser && typeof extractedData !== "string") {
                 throw new Error(`Expected a string for model parsing, but got ${typeof extractedData}`)
             }
 
-            if (modelIsHtmlParser) {
+            if (!modelIsJsonParser) {
                 return await model.parse(extractedData)
             }
 
