@@ -1,9 +1,9 @@
 import { HtmlParsingModel } from "../html"
-import { mardownIt } from "./constants"
+import { markdownIt } from "./constants"
 
 export class MarkdownParsingModel extends HtmlParsingModel {
     parse(source: string): Promise<any> {
-        const htmlSource = mardownIt.render(source)
+        const htmlSource = markdownIt.render(`<!DOCTYPE html><html lang="en"><head><title>Markdown Document</title></head><body>${source}</body></html>`)
         return super.parse(htmlSource)
     }
 }
