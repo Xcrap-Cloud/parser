@@ -31,9 +31,9 @@ export type ExtractManyOptions = {
 export const nodeHtmlParserOptions = {
     blockTextElements: {
         script: true,
-        noscript: true,
-        style: true,
-        code: true
+		noscript: true,
+		style: true,
+		code: true
     }
 } satisfies NodeHtmlOptions
 
