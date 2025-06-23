@@ -1,6 +1,6 @@
 {
   "name": "@xcrap/parser",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Xcrap Parser is a package of the Xcrap framework, it was developed to take care of the data extraction part of text files (currently supporting only HTML and JSON) using declarative models.",
   "keywords": [
     "xcrap",
