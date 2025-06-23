@@ -1,7 +1,8 @@
-import htmlParser, { HTMLElement } from "node-html-parser"
+import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-parser"
 
 import { MultipleQueryError, HTMLElementNotFoundError } from "../errors"
 import { ParsingModel } from "../parsing-model-interface"
+import { nodeHtmlParserOptions } from "./parser"
 import { ExtractorFunction } from "./extractors"
 
 export type HtmlParsingModelShapeBaseValue = {
@@ -31,8 +32,8 @@ export type ParseBaseValueReturnType = (undefined | string)[] | string | null | 
 export class HtmlParsingModel implements ParsingModel {
     constructor(readonly shape: HtmlParsingModelShape) {}
 
-    async parse(source: string): Promise<any> {
-        const root = htmlParser.parse(source)
+    async parse(source: string, options: NodeHtmlOptions = nodeHtmlParserOptions): Promise<any> {
+        const root = htmlParser.parse(source, options)
         const data: Record<keyof typeof this.shape, any> = {}
 
         for (const key in this.shape) {
