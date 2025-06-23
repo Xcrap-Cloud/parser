@@ -33,7 +33,7 @@ export const nodeHtmlParserOptions = {
         script: true,
         noscript: true,
         style: true,
-        pre: false
+        code: true
     }
 } satisfies NodeHtmlOptions
 
