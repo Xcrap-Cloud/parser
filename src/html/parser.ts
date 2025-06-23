@@ -1,4 +1,4 @@
-import htmlParser, { HTMLElement } from "node-html-parser"
+import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-parser"
 
 import { ParsingModel } from "../parsing-model-interface"
 import { HTMLElementNotFoundError } from "../errors"
@@ -28,13 +28,22 @@ export type ExtractManyOptions = {
     limit?: number
 }
 
+export const nodeHtmlParserOptions = {
+    blockTextElements: {
+        script: true,
+        noscript: true,
+        style: true,
+        pre: false
+    }
+} satisfies NodeHtmlOptions
+
 export class HtmlParser extends Parser {
     readonly root: HTMLElement
 
-    constructor(readonly source: string) {
+    constructor(readonly source: string, options: NodeHtmlOptions = nodeHtmlParserOptions) {
         super(source)
 
-        this.root = htmlParser.parse(source)
+        this.root = htmlParser.parse(source, options)
     }
 
     async parseMany({

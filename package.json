@@ -32,7 +32,6 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/he": "^1.2.3",
     "@types/jest": "^29.5.14",
     "@types/jmespath": "^0.15.2",
     "@types/node": "^22.13.14",
@@ -42,7 +41,6 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "he": "^1.2.0",
     "jmespath": "^0.16.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
