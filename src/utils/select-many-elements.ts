@@ -9,7 +9,7 @@ export function selectManyElements(query: BuildedQuery, root: HTMLElement) {
     if (query.type === "css") {
         return root.querySelectorAll(query.value)
     } else {
-        const doc = new XmldomParser().parseFromString(root.outerHTML)
+        const doc = new XmldomParser().parseFromString(root.toString())
         const elements = xpathLib.select(query.value, doc) as Node[]
         return elements.map(element => htmlParser.parse(element.toString()).childNodes[0] as HTMLElement)
     }
