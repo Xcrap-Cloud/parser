@@ -15,7 +15,7 @@ describe("HtmlParser integration test", () => {
         const parser = new MarkdownParser(markdown)
 
         const data = await parser.parseMany({
-            query: "ul li",
+            query: css("ul li"),
             extractor: extract("innerText")
         })
 

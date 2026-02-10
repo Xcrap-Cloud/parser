@@ -1,14 +1,14 @@
 import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-parser"
 
+import { selectFirstElement, selectManyElements } from "../utils"
 import { ParsingModel } from "../parsing-model-interface"
 import { HTMLElementNotFoundError } from "../errors"
 import { ExtractorFunction } from "./extractors"
-import { Parser } from "../parser"
 import { BuildedQuery } from "../query-builders"
-import { selectFirstElement, selectManyElements } from "../utils"
+import { Parser } from "../parser"
 
 export type ParseManyOptions = {
-    query: string
+    query: BuildedQuery
     extractor: ExtractorFunction
     limit?: number
 }
@@ -53,7 +53,7 @@ export class HtmlParser extends Parser {
         extractor,
         limit
     }: ParseManyOptions): Promise<(string | undefined)[]> {
-        const elements = this.root.querySelectorAll(query)
+        const elements = selectManyElements(query, this.root)
 
         let items: (string | undefined)[] = []
 
