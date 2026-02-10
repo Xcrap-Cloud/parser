@@ -1,11 +1,11 @@
-import { extract, MarkdownParser } from "../src"
+import { css, extract, MarkdownParser } from "../src"
 
 describe("HtmlParser integration test", () => {
     test("should extract heading from Markdown", async () => {
         const markdown = "# Example"
         const parser = new MarkdownParser(markdown)
 
-        const heading = await parser.parseFirst({ query: "h1#example", extractor: extract("innerText") })
+        const heading = await parser.parseFirst({ query: css("h1#example"), extractor: extract("innerText") })
 
         expect(heading).toEqual("Example")
     })
@@ -31,7 +31,7 @@ describe("HtmlParser integration test", () => {
         const markdown = `<h1>Example</h1>`
         const parser = new MarkdownParser(markdown)
 
-        const heading = await parser.parseFirst({ query: "h1", extractor: extract("innerText") })
+        const heading = await parser.parseFirst({ query: css("h1"), extractor: extract("innerText") })
 
         expect(heading).toEqual("Example")
     })

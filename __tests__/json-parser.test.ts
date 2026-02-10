@@ -1,7 +1,7 @@
 import { JsonParsingModel } from "../src/json/parsing-model"
 import { HtmlParsingModel } from "../src/html/parsing-model"
 import { extractInnerText } from "../src/html/extractors"
-import { JsonParser } from "../src"
+import { css, JsonParser } from "../src"
 
 describe("JsonParser integration test", () => {
     test("should extract simple value from JSON", () => {
@@ -36,7 +36,7 @@ describe("JsonParsingModel com model HtmlParsingModel", () => {
                 query: "key",
                 model: new HtmlParsingModel({
                     text: {
-                        query: "p",
+                        query: css("p"),
                         extractor: extractInnerText
                     }
                 })
@@ -53,7 +53,7 @@ describe("JsonParsingModel com model HtmlParsingModel", () => {
                 query: "key",
                 model: new HtmlParsingModel({
                     text: {
-                        query: "p",
+                        query: css("p"),
                         extractor: extractInnerText
                     }
                 })

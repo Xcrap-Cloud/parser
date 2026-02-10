@@ -1,7 +1,6 @@
 import * as jmespath from "jmespath"
 
 import { ParsingModel } from "../parsing-model-interface"
-import { HtmlParsingModel } from "../html"
 
 export type JsonParsingModelShapeValue = {
     query: string

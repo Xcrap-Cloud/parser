@@ -4,6 +4,8 @@ import { ParsingModel } from "../parsing-model-interface"
 import { HTMLElementNotFoundError } from "../errors"
 import { ExtractorFunction } from "./extractors"
 import { Parser } from "../parser"
+import { BuildedQuery } from "../query-builders"
+import { selectFirstElement, selectManyElements } from "../utils"
 
 export type ParseManyOptions = {
     query: string
@@ -12,18 +14,18 @@ export type ParseManyOptions = {
 }
 
 export type ParseFirstOptions = {
-    query?: string
+    query?: BuildedQuery
     extractor: ExtractorFunction
     default?: string | null
 }
 
 export type ExtractFirstOptions = {
-    query?: string
+    query?: BuildedQuery
     model: ParsingModel
 }
 
 export type ExtractManyOptions = {
-    query: string
+    query: BuildedQuery
     model: ParsingModel
     limit?: number
 }
@@ -72,7 +74,7 @@ export class HtmlParser extends Parser {
         let data: any | undefined | null
 
         if (query) {
-            const element = this.root.querySelector(query)
+            const element = selectFirstElement(query, this.root)
 
             if (!element) {
                 if (default_ !== undefined) {
@@ -91,7 +93,7 @@ export class HtmlParser extends Parser {
     }
 
     async extractFirst({ model, query }: ExtractFirstOptions) {
-        const element = query ? this.root.querySelector(query) : this.root
+        const element = query ? selectFirstElement(query, this.root) : this.root
 
         if (!element) {
             throw new HTMLElementNotFoundError(query)
@@ -101,7 +103,7 @@ export class HtmlParser extends Parser {
     }
 
     async extractMany({ model, query, limit }: ExtractManyOptions) {
-        const elements = this.root.querySelectorAll(query)
+        const elements = selectManyElements(query, this.root)
 
         let dataList: any[] = []
 

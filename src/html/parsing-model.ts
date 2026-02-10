@@ -1,12 +1,14 @@
 import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-parser"
 
 import { MultipleQueryError, HTMLElementNotFoundError } from "../errors"
+import { selectManyElements, selectFirstElement } from "../utils"
 import { ParsingModel } from "../parsing-model-interface"
 import { nodeHtmlParserOptions } from "./parser"
 import { ExtractorFunction } from "./extractors"
+import { BuildedQuery } from "../query-builders"
 
 export type HtmlParsingModelShapeBaseValue = {
-    query?: string
+    query?: BuildedQuery
     default?: string | string[] | null
     multiple?: boolean
     limit?: number
@@ -14,7 +16,7 @@ export type HtmlParsingModelShapeBaseValue = {
 }
 
 export type HtmlParsingModelShapeNestedValue = {
-    query: string
+    query: BuildedQuery
     limit?: number
     multiple?: boolean
     model: ParsingModel
@@ -57,7 +59,7 @@ export class HtmlParsingModel implements ParsingModel {
                 throw new MultipleQueryError()
             }
 
-            const elements = root.querySelectorAll(value.query)
+            const elements = selectManyElements(value.query, root)
 
             if (value.limit !== undefined) {
                 elements.splice(value.limit)
@@ -67,7 +69,7 @@ export class HtmlParsingModel implements ParsingModel {
                 elements.map(element => value.extractor(element))
             )
         } else {
-            const element = value.query ? root.querySelector(value.query) : root
+            const element = value.query ? selectFirstElement(value.query, root) : root
 
             if (!element) {
                 if (value.default === undefined) {
@@ -83,7 +85,7 @@ export class HtmlParsingModel implements ParsingModel {
 
     protected async parseNestedValue(value: HtmlParsingModelShapeNestedValue, root: HTMLElement) {
         if (value.multiple) {
-            const elements = root.querySelectorAll(value.query)
+            const elements = selectManyElements(value.query, root)
 
             if (value.limit !== undefined) {
                 elements.splice(value.limit)
@@ -93,7 +95,7 @@ export class HtmlParsingModel implements ParsingModel {
                 elements.map(element => value.model.parse(element.outerHTML))
             )
         } else {
-            const element = root.querySelector(value.query)
+            const element = selectFirstElement(value.query, root)
 
             if (!element) {
                 throw new HTMLElementNotFoundError(value.query)

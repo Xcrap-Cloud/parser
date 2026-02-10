@@ -1,4 +1,4 @@
-import { extract, HtmlParsingModel, JsonParsingModel } from "../src"
+import { css, extract, HtmlParsingModel, JsonParsingModel } from "../src"
 
 describe("HtmlParsingModel integration test", () => {
     test("should extract title from HTML", async () => {
@@ -6,7 +6,7 @@ describe("HtmlParsingModel integration test", () => {
 
         const rootParsingModel = new HtmlParsingModel({
             title: {
-                query: "title",
+                query: css("title"),
                 extractor: extract("innerText")
             }
         })
@@ -21,7 +21,7 @@ describe("HtmlParsingModel integration test", () => {
 
         const rootParsingModel = new HtmlParsingModel({
             items: {
-                query: "li",
+                query: css("li"),
                 multiple: true,
                 extractor: extract("innerText")
             }
@@ -44,18 +44,18 @@ describe("HtmlParsingModel integration test", () => {
 
         const productParsingModel = new HtmlParsingModel({
             name: {
-                query: "span.name",
+                query: css("span.name"),
                 extractor: extract("textContent")
             },
             price: {
-                query: "span.price",
+                query: css("span.price"),
                 extractor: extract("textContent")
             }
         })
 
         const rootParsingModel = new HtmlParsingModel({
             products: {
-                query: "li",
+                query: css("li"),
                 multiple: true,
                 model: productParsingModel
             }
@@ -102,7 +102,7 @@ describe("HtmlParsingModel integration test", () => {
 
         const rootParsingModel = new HtmlParsingModel({
             userData: {
-                query: "script[type='application/json'][id='user-data']",
+                query: css("script[type='application/json'][id='user-data']"),
                 extractor: extract("innerText"),
                 model: userParsingModel
             }
@@ -124,7 +124,7 @@ describe("HtmlParsingModel integration test", () => {
     
         const rootParsingModel = new HtmlParsingModel({
             missingElement: {
-                query: "h1",
+                query: css("h1"),
                 default: null,
                 extractor: extract("innerText")
             }

@@ -7,6 +7,30 @@ export type ExtractorFunctionReturnType = (string | undefined) | Promise<string 
 
 export type ExtractorFunction<T = ExtractorFunctionReturnType> = (element: HTMLElement) => T
 
+const htmlProperties = [
+    "innerText",
+    "textContent",
+    "text",
+    "innerHTML",
+    "outerHTML",
+    "tagName",
+    "classList",
+    "classNames",
+    "id",
+    "childElementCount",
+    "structure",
+    "structuredText",
+    "attributes",
+    "attrs",
+    "localName",
+    "nodeType",
+    "range",
+    "rawAttributes",
+    "rawAttrs",
+    "rawTagName",
+    "rawText",
+]
+
 export type HtmlProperty = 
     | "innerText"
     | "textContent"
@@ -56,6 +80,7 @@ export type HtmlAttribute =
     | "aria-checked"
     | "aria-disabled"
     | "data-*"
+    | `data-${string}`
     | (string & {})
 
 export const propertyExtractors: Record<HtmlProperty, (element: HTMLElement) => unknown | undefined> = {
@@ -88,7 +113,7 @@ export function extract<T extends HtmlProperty | HtmlAttribute, R = string>(
     isAttribute: boolean = false
 ): ExtractorFunction<R | undefined> {
     return (element: HTMLElement): R => {
-        if (isAttribute) {
+        if (isAttribute || !(htmlProperties.includes(key))) {
             return element.getAttribute(key) as R
         }
 
@@ -188,5 +213,22 @@ export const fromPreviousElementSibling = (
         }
 
         return extractor(previousElementSibling)
+    }
+}
+
+export type RegexExtractor = (
+    pattern: RegExp,
+    index?: number
+) => ExtractorFunction<string | string[]>
+
+export const matchRegexFrom = (
+    extractor: ExtractorFunction<string | undefined>,
+    pattern: RegExp,
+    index?: number
+): ExtractorFunction<string | string[] | undefined> => {
+    return (element) => {
+        const value = extractor(element) ?? ""
+        const matches = Array.from(value.matchAll(pattern), match => match[1] ?? match[0])
+        return index !== undefined ? matches[index] : matches
     }
 }

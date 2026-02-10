@@ -1,11 +1,11 @@
-import { extract, HtmlParser, HtmlParsingModel } from "../src"
+import { extract, HtmlParser, HtmlParsingModel, css } from "../src"
 
 describe("HtmlParser integration test", () => {
     test("should extract title from HTML", async () => {
         const html = "<html><head><title>Example</title></head></html>"
         const parser = new HtmlParser(html)
 
-        const title = await parser.parseFirst({ query: "title", extractor: extract("innerText") })
+        const title = await parser.parseFirst({ query: css("title"), extractor: extract("innerText") })
 
         expect(title).toEqual("Example")
     })
@@ -33,24 +33,24 @@ describe("HtmlParser integration test", () => {
 
         const productParsingModel = new HtmlParsingModel({
             name: {
-                query: "span.name",
+                query: css("span.name"),
                 extractor: extract("textContent")
             },
             price: {
-                query: "span.price",
+                query: css("span.price"),
                 extractor: extract("textContent")
             }
         })
 
         const rootParsingModel = new HtmlParsingModel({
             products: {
-                query: "li",
+                query: css("li"),
                 multiple: true,
                 model: productParsingModel
             }
         })
 
-        const data = await parser.extractFirst({ query: "ul#products", model: rootParsingModel })
+        const data = await parser.extractFirst({ query: css("ul#products"), model: rootParsingModel })
 
         expect(data).toEqual({
             products: [
@@ -79,7 +79,7 @@ describe("HtmlParser integration test", () => {
         const parser = new HtmlParser(html)
 
         const data = await parser.parseFirst({
-            query: "h1",
+            query: css("h1"),
             extractor: extract("innerText"),
             default: null
         })
