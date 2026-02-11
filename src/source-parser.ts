@@ -1,7 +1,7 @@
 import { Abortable } from "node:events"
 import fs, { OpenMode } from "node:fs"
 
-import { ExtractorModel } from "./interfaces/extractor-model"
+import { ExtractionModel } from "./interfaces/extraction-model"
 
 export type SourceParserLoadFileOptions =
     | ({
@@ -13,8 +13,8 @@ export type SourceParserLoadFileOptions =
 export class SourceParser {
     constructor(readonly source: string) {}
 
-    async extractWithModel<T>(extractorModel: ExtractorModel<T>): Promise<T> {
-        return await extractorModel.extract(this.source)
+    async extractWithModel<T>(extractionModel: ExtractionModel<T>): Promise<T> {
+        return await extractionModel.extract(this.source)
     }
 
     static async loadFile<T extends typeof SourceParser>(

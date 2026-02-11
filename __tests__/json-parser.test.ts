@@ -1,4 +1,4 @@
-import { css, HtmlExtrctorModel, JsonExtractorModel, JsonParser } from "../src"
+import { css, HtmlExtractionModel, JsonExtractionModel, JsonParser } from "../src"
 import { extractInnerText } from "../src/html/extractors"
 
 describe("JsonParser integration test", () => {
@@ -26,13 +26,13 @@ describe("JsonParser integration test", () => {
     })
 })
 
-describe("JsonExtractorModel com model HtmlExtrctorModel", () => {
+describe("JsonExtractionModel com model HtmlExtractionModel", () => {
     test("deve extrair HTML de string JSON com sucesso", async () => {
         const source = '{ "key": "<p>text</p>" }'
-        const extractorModel = new JsonExtractorModel({
+        const extractionModel = new JsonExtractionModel({
             text: {
                 query: "key",
-                model: new HtmlExtrctorModel({
+                model: new HtmlExtractionModel({
                     text: {
                         query: css("p"),
                         extractor: extractInnerText,
@@ -40,16 +40,16 @@ describe("JsonExtractorModel com model HtmlExtrctorModel", () => {
                 }),
             },
         })
-        const result = await extractorModel.extract(source)
+        const result = await extractionModel.extract(source)
         expect(result.text).toEqual({ text: "text" })
     })
 
-    test("deve lançar erro se valor não for string ao usar model HtmlExtrctorModel", async () => {
+    test("deve lançar erro se valor não for string ao usar model HtmlExtractionModel", async () => {
         const source = '{ "key": { "xpto": "text" } }'
-        const extractorModel = new JsonExtractorModel({
+        const extractionModel = new JsonExtractionModel({
             text: {
                 query: "key",
-                model: new HtmlExtrctorModel({
+                model: new HtmlExtractionModel({
                     text: {
                         query: css("p"),
                         extractor: extractInnerText,
@@ -58,6 +58,6 @@ describe("JsonExtractorModel com model HtmlExtrctorModel", () => {
             },
         })
 
-        await expect(extractorModel.extract(source)).rejects.toThrow(/Expected a string for model parsing/)
+        await expect(extractionModel.extract(source)).rejects.toThrow(/Expected a string for model parsing/)
     })
 })

@@ -1,17 +1,17 @@
-import { xpath, extract, HtmlExtrctorModel } from "../src"
+import { xpath, extract, HtmlExtractionModel } from "../src"
 
-describe("HtmlExtractorModel with XPath integration test", () => {
+describe("HtmlExtractionModel with XPath integration test", () => {
     test("should extract title from HTML using XPath", async () => {
         const html = "<html><head><title>Example XPath</title></head></html>"
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             title: {
                 query: xpath("//title"),
                 extractor: extract("innerText"),
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({ title: "Example XPath" })
     })
@@ -19,14 +19,14 @@ describe("HtmlExtractorModel with XPath integration test", () => {
     test("should extract attribute from HTML using XPath", async () => {
         const html = `<html><body><a href="https://example.com" class="link">Link</a></body></html>`
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             linkHref: {
                 query: xpath("//a[@class='link']"),
                 extractor: extract("href"),
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({ linkHref: "https://example.com" })
     })
@@ -34,7 +34,7 @@ describe("HtmlExtractorModel with XPath integration test", () => {
     test("should extract multiple items from HTML using XPath", async () => {
         const html = `<html><body><h1>Items</h1><ul><li>Item A</li><li>Item B</li><li>Item C</li></ul></body></html>`
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             items: {
                 query: xpath("//li"),
                 multiple: true,
@@ -42,7 +42,7 @@ describe("HtmlExtractorModel with XPath integration test", () => {
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({
             items: ["Item A", "Item B", "Item C"],
@@ -66,7 +66,7 @@ describe("HtmlExtractorModel with XPath integration test", () => {
             </body>
         </html>`
 
-        const productExtractorModel = new HtmlExtrctorModel({
+        const productExtractionModel = new HtmlExtractionModel({
             name: {
                 query: xpath(".//span[@class='name']"),
                 extractor: extract("textContent"),
@@ -77,15 +77,15 @@ describe("HtmlExtractorModel with XPath integration test", () => {
             },
         })
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             products: {
                 query: xpath("//div[contains(@class, 'product') and not(contains(@class, 'product-list'))]"),
                 multiple: true,
-                model: productExtractorModel,
+                model: productExtractionModel,
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({
             products: [
@@ -104,7 +104,7 @@ describe("HtmlExtractorModel with XPath integration test", () => {
     test("should handle missing elements with default value using XPath", async () => {
         const html = "<html><body></body></html>"
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             missing: {
                 query: xpath("//h1"),
                 default: "Not Found",
@@ -112,7 +112,7 @@ describe("HtmlExtractorModel with XPath integration test", () => {
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({ missing: "Not Found" })
     })
@@ -130,14 +130,14 @@ describe("HtmlExtractorModel with XPath integration test", () => {
         </html>`
 
         // Select the second paragraph
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             secondPara: {
                 query: xpath("//div[@id='container']/p[2]"),
                 extractor: extract("innerText"),
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({ secondPara: "Second Paragraph" })
     })

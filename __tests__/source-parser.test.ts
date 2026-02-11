@@ -1,4 +1,4 @@
-import { SourceParser, ExtractorModel } from "../src"
+import { SourceParser, ExtractionModel } from "../src"
 import fs from "node:fs"
 
 jest.mock("node:fs", () => ({
@@ -7,7 +7,7 @@ jest.mock("node:fs", () => ({
     },
 }))
 
-class MockExtractorModel implements ExtractorModel {
+class MockExtractionModel implements ExtractionModel {
     async extract(source: string): Promise<any> {
         return `Parsed content: ${source}`
     }
@@ -16,7 +16,7 @@ class MockExtractorModel implements ExtractorModel {
 describe("Parser integration test", () => {
     describe("extractWithModel", () => {
         it("must call the model's extract method with the correct string", async () => {
-            const mockModel = new MockExtractorModel()
+            const mockModel = new MockExtractionModel()
             const parser = new SourceParser("source-content")
 
             const extractSpy = jest.spyOn(mockModel, "extract").mockResolvedValue("parsed content")

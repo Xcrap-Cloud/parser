@@ -1,17 +1,17 @@
-import { css, extract, HtmlExtrctorModel, JsonExtractorModel } from "../src"
+import { css, extract, HtmlExtractionModel, JsonExtractionModel } from "../src"
 
-describe("HtmlExtractorModel integration test", () => {
+describe("HtmlExtractionModel integration test", () => {
     test("should extract title from HTML", async () => {
         const html = "<html><head><title>Example</title></head></html>"
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             title: {
                 query: css("title"),
                 extractor: extract("innerText"),
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({ title: "Example" })
     })
@@ -19,7 +19,7 @@ describe("HtmlExtractorModel integration test", () => {
     test("should extract multiple items from HTML", async () => {
         const html = `<html><body><h1>Itens</h1><ul><li>Item A</li><li>Item B</li><li>Item C</li><li>Item D</li></ul></body></html>`
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             items: {
                 query: css("li"),
                 multiple: true,
@@ -27,7 +27,7 @@ describe("HtmlExtractorModel integration test", () => {
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({
             items: ["Item A", "Item B", "Item C", "Item D"],
@@ -37,7 +37,7 @@ describe("HtmlExtractorModel integration test", () => {
     test("should extract product list from HTML", async () => {
         const html = `<html><body><h1>Items</h1><ul id="products"><li><span class="name">Product 1</span><span class="price">$ 20.00</span></li><li><span class="name">Product 2</span><span class="price">$ 25.00</span></li><li><span class="name">Product 3</span><span class="price">$ 15.90</span></li><li><span class="name">Product 4</span><span class="price">$ 13.80</span></li></ul></body></html>`
 
-        const productExtractorModel = new HtmlExtrctorModel({
+        const productExtractionModel = new HtmlExtractionModel({
             name: {
                 query: css("span.name"),
                 extractor: extract("textContent"),
@@ -48,15 +48,15 @@ describe("HtmlExtractorModel integration test", () => {
             },
         })
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             products: {
                 query: css("li"),
                 multiple: true,
-                model: productExtractorModel,
+                model: productExtractionModel,
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({
             products: [
@@ -83,7 +83,7 @@ describe("HtmlExtractorModel integration test", () => {
     test("should extract user data from HTML", async () => {
         const html = `<html><body><script id="user-data" type="application/json">{ "name": "Marcuth", "username": "marcuth", "age": 19 }</script></body></html>`
 
-        const userExtractorModel = new JsonExtractorModel({
+        const userExtractionModel = new JsonExtractionModel({
             username: {
                 query: "username",
             },
@@ -95,15 +95,15 @@ describe("HtmlExtractorModel integration test", () => {
             },
         })
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             userData: {
                 query: css("script[type='application/json'][id='user-data']"),
                 extractor: extract("innerText"),
-                model: userExtractorModel,
+                model: userExtractionModel,
             },
         })
 
-        const data = await await rootExtractorModel.extract(html)
+        const data = await await rootExtractionModel.extract(html)
 
         expect(data).toEqual({
             userData: {
@@ -117,7 +117,7 @@ describe("HtmlExtractorModel integration test", () => {
     test("should return deafult value when extracting a non-existing element", async () => {
         const html = "<html><head></head><body></body></html>"
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             missingElement: {
                 query: css("h1"),
                 default: null,
@@ -125,7 +125,7 @@ describe("HtmlExtractorModel integration test", () => {
             },
         })
 
-        const data = await rootExtractorModel.extract(html)
+        const data = await rootExtractionModel.extract(html)
 
         expect(data).toEqual({ missingElement: null })
     })

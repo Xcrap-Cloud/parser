@@ -1,27 +1,27 @@
 import * as jmespath from "jmespath"
 
-import { ExtractorModel } from "../interfaces/extractor-model"
+import { ExtractionModel } from "../interfaces/extraction-model"
 
-export type JsonExtractorModelShapeValue = {
+export type JsonExtractionModelShapeValue = {
     query: string
     default?: any
-    model?: ExtractorModel
+    model?: ExtractionModel
     multiple?: boolean
     limit?: number
 }
 
-export type JsonExtractorModelShape = {
-    [key: string]: JsonExtractorModelShapeValue
+export type JsonExtractionModelShape = {
+    [key: string]: JsonExtractionModelShapeValue
 }
 
-export type InferJsonValue<V extends JsonExtractorModelShapeValue> =
-    V["model"] extends ExtractorModel<infer M> ? (V["multiple"] extends true ? M[] : M) : any
+export type InferJsonValue<V extends JsonExtractionModelShapeValue> =
+    V["model"] extends ExtractionModel<infer M> ? (V["multiple"] extends true ? M[] : M) : any
 
-export type InferJsonShape<S extends JsonExtractorModelShape> = {
+export type InferJsonShape<S extends JsonExtractionModelShape> = {
     [K in keyof S]: InferJsonValue<S[K]>
 }
 
-export class JsonExtractorModel<S extends JsonExtractorModelShape> implements ExtractorModel<InferJsonShape<S>> {
+export class JsonExtractionModel<S extends JsonExtractionModelShape> implements ExtractionModel<InferJsonShape<S>> {
     constructor(readonly shape: S) {}
 
     async extract(source: string): Promise<InferJsonShape<S>> {
@@ -43,7 +43,7 @@ export class JsonExtractorModel<S extends JsonExtractorModelShape> implements Ex
         return data
     }
 
-    extractValue(value: JsonExtractorModelShapeValue, root: any) {
+    extractValue(value: JsonExtractionModelShapeValue, root: any) {
         const extractedData = jmespath.search(root, value.query)
 
         if (extractedData === null && value.default !== undefined) {
@@ -53,10 +53,10 @@ export class JsonExtractorModel<S extends JsonExtractorModelShape> implements Ex
         return extractedData
     }
 
-    async extractNestedValue(value: JsonExtractorModelShapeValue, root: any) {
+    async extractNestedValue(value: JsonExtractionModelShapeValue, root: any) {
         const extractedData = jmespath.search(root, value.query)
         const model = value.model!
-        const modelIsJsonExtractor = model.constructor.name === JsonExtractorModel.name
+        const modelIsJsonExtractor = model.constructor.name === JsonExtractionModel.name
 
         if (extractedData === null && value.default !== undefined) {
             return value.default

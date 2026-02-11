@@ -2,12 +2,12 @@ import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-p
 
 import { MultipleQueryError, HTMLElementNotFoundError } from "../errors"
 import { selectManyElements, selectFirstElement } from "../utils"
-import { ExtractorModel } from "../interfaces/extractor-model"
+import { ExtractionModel } from "../interfaces/extraction-model"
 import { BuildedQuery } from "../query-builders"
 import { ExtractorFunction } from "./extractors"
 import { nodeHtmlParserOptions } from "./parser"
 
-export type HtmlExtrctorModelShapeBaseValue = {
+export type HtmlExtractionModelShapeBaseValue = {
     query?: BuildedQuery
     default?: string | string[] | null
     multiple?: boolean
@@ -15,41 +15,41 @@ export type HtmlExtrctorModelShapeBaseValue = {
     extractor: ExtractorFunction
 }
 
-export type HtmlExtrctorModelShapeNestedValue = {
+export type HtmlExtractionModelShapeNestedValue = {
     query: BuildedQuery
     limit?: number
     multiple?: boolean
-    model: ExtractorModel
+    model: ExtractionModel
     extractor?: ExtractorFunction
 }
 
-export type HtmlExtrctorModelValue = HtmlExtrctorModelShapeBaseValue | HtmlExtrctorModelShapeNestedValue
+export type HtmlExtractionModelValue = HtmlExtractionModelShapeBaseValue | HtmlExtractionModelShapeNestedValue
 
-export type HtmlExtrctorModelShape = {
-    [key: string]: HtmlExtrctorModelValue
+export type HtmlExtractionModelShape = {
+    [key: string]: HtmlExtractionModelValue
 }
 
-export type InferHtmlValue<V extends HtmlExtrctorModelValue> = V extends HtmlExtrctorModelShapeNestedValue
+export type InferHtmlValue<V extends HtmlExtractionModelValue> = V extends HtmlExtractionModelShapeNestedValue
     ? V["multiple"] extends true
-        ? V["model"] extends ExtractorModel<infer M>
+        ? V["model"] extends ExtractionModel<infer M>
             ? M[]
             : any
-        : V["model"] extends ExtractorModel<infer M>
+        : V["model"] extends ExtractionModel<infer M>
           ? M
           : any
-    : V extends HtmlExtrctorModelShapeBaseValue
+    : V extends HtmlExtractionModelShapeBaseValue
       ? V["multiple"] extends true
           ? Awaited<ReturnType<V["extractor"]>>[]
           : Awaited<ReturnType<V["extractor"]>>
       : never
 
-export type InferHtmlShape<S extends HtmlExtrctorModelShape> = {
+export type InferHtmlShape<S extends HtmlExtractionModelShape> = {
     [K in keyof S]: InferHtmlValue<S[K]>
 }
 
 export type ParseBaseValueReturnType = (undefined | string)[] | string | null | undefined
 
-export class HtmlExtrctorModel<S extends HtmlExtrctorModelShape> implements ExtractorModel<InferHtmlShape<S>> {
+export class HtmlExtractionModel<S extends HtmlExtractionModelShape> implements ExtractionModel<InferHtmlShape<S>> {
     constructor(readonly shape: S) {}
 
     async extract(source: string, options: NodeHtmlOptions = nodeHtmlParserOptions): Promise<InferHtmlShape<S>> {
@@ -72,7 +72,7 @@ export class HtmlExtrctorModel<S extends HtmlExtrctorModelShape> implements Extr
     }
 
     protected async extractBaseValue(
-        value: HtmlExtrctorModelShapeBaseValue,
+        value: HtmlExtractionModelShapeBaseValue,
         root: HTMLElement,
     ): Promise<ParseBaseValueReturnType> {
         if (value.multiple) {
@@ -102,7 +102,7 @@ export class HtmlExtrctorModel<S extends HtmlExtrctorModelShape> implements Extr
         }
     }
 
-    protected async extractNestedValue(value: HtmlExtrctorModelShapeNestedValue, root: HTMLElement) {
+    protected async extractNestedValue(value: HtmlExtractionModelShapeNestedValue, root: HTMLElement) {
         if (value.multiple) {
             const elements = selectManyElements(value.query, root)
 

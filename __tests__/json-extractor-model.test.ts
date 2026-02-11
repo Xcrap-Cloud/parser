@@ -1,10 +1,10 @@
-import { JsonExtractorModel } from "../src"
+import { JsonExtractionModel } from "../src"
 
-describe("JsonExtractorModel integration test", () => {
+describe("JsonExtractionModel integration test", () => {
     test("should correctly map JSON properties", async () => {
         const json = JSON.stringify({ name: "Marcuth", age: 19, contact: { email: "test@email.com" } })
 
-        const extractorModel = new JsonExtractorModel({
+        const extractionModel = new JsonExtractionModel({
             username: {
                 query: "name",
             },
@@ -16,7 +16,7 @@ describe("JsonExtractorModel integration test", () => {
             },
         })
 
-        const data = await extractorModel.extract(json)
+        const data = await extractionModel.extract(json)
 
         expect(data).toEqual({
             username: "Marcuth",
@@ -28,7 +28,7 @@ describe("JsonExtractorModel integration test", () => {
     test("should return null for missing properties", async () => {
         const json = JSON.stringify({ name: "Marcuth" })
 
-        const extractorModel = new JsonExtractorModel({
+        const extractionModel = new JsonExtractionModel({
             username: {
                 query: "name",
             },
@@ -37,7 +37,7 @@ describe("JsonExtractorModel integration test", () => {
             },
         })
 
-        const data = await extractorModel.extract(json)
+        const data = await extractionModel.extract(json)
 
         expect(data).toEqual({
             username: "Marcuth",
@@ -48,12 +48,12 @@ describe("JsonExtractorModel integration test", () => {
     test("should throw error for invalid JSON", async () => {
         const invalidJson = "{ name: 'Marcuth' "
 
-        const extractorModel = new JsonExtractorModel({
+        const extractionModel = new JsonExtractionModel({
             username: {
                 query: "name",
             },
         })
 
-        await expect(extractorModel.extract(invalidJson)).rejects.toThrow(SyntaxError)
+        await expect(extractionModel.extract(invalidJson)).rejects.toThrow(SyntaxError)
     })
 })

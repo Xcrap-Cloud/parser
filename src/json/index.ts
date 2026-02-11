@@ -1,2 +1,2 @@
-export * from "./extractor-model"
+export * from "./extraction-model"
 export * from "./parser"

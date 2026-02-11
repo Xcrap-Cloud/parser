@@ -1,7 +1,7 @@
 import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-parser"
 
 import { selectFirstElement, selectManyElements } from "../utils"
-import { ExtractorModel } from "../interfaces/extractor-model"
+import { ExtractionModel } from "../interfaces/extraction-model"
 import { HTMLElementNotFoundError } from "../errors"
 import { BuildedQuery } from "../query-builders"
 import { ExtractorFunction } from "./extractors"
@@ -21,12 +21,12 @@ export type ExtractValueOptions = {
 
 export type ExtractModelOptions<T = any> = {
     query?: BuildedQuery
-    model: ExtractorModel<T>
+    model: ExtractionModel<T>
 }
 
 export type ExtractModelsOptions<T = any> = {
     query: BuildedQuery
-    model: ExtractorModel<T>
+    model: ExtractionModel<T>
     limit?: number
 }
 

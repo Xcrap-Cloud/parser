@@ -65,16 +65,16 @@ import { HtmlParser, extract, css } from "@xcrap/extractor"
 
 ### Data extraction with using models
 
-ExtractorModels are decoupled enough that you don't have to rely on using SourceParser instances, but we'll still use them:
+ExtractionModels are decoupled enough that you don't have to rely on using SourceParser instances, but we'll still use them:
 
 ```ts
-import { HtmlParser, HtmlExtrctorModel, extract, css } from "@xcrap/extractor"
+import { HtmlParser, HtmlExtractionModel, extract, css } from "@xcrap/extractor"
 
 ;(async () => {
     const html = `<html><body><h1>Heading</h1><div><p id="id">1</p><p id="name">Name</p><p class="age">23</p></div></body></html>`
     const parser = new HtmlParser(html)
 
-    const rootModel = new HtmlExtrctorModel({
+    const rootModel = new HtmlExtractionModel({
         heading: {
             query: css("h1"),
             extractor: extract("innerText")
@@ -107,9 +107,9 @@ import { HtmlParser, HtmlExtrctorModel, extract, css } from "@xcrap/extractor"
 
 A SourceParser for this library is a class that deals in some way with a file type, loads that file, and may or may not have some methods to easily extract data.
 
-A parser has a default method called `extractWithModel` which is a wrapper that takes a `ExtractorModel` and calls the `extract()` method providing the internal `source` property.
+A parser has a default method called `extractWithModel` which is a wrapper that takes a `ExtractionModel` and calls the `extract()` method providing the internal `source` property.
 
-### What is a ExtractorModel?
+### What is a ExtractionModel?
 
 A Extractor Model is a class that receives a `shape` in its constructor and stores it as a property. It must have a method called `extract()` that will receive a `source`, which is the code/text that contains the information to be extracted.
 

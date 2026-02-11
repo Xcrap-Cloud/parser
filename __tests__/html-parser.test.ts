@@ -1,4 +1,4 @@
-import { extract, HtmlParser, HtmlExtrctorModel, css } from "../src"
+import { extract, HtmlParser, HtmlExtractionModel, css } from "../src"
 
 describe("HtmlParser integration test", () => {
     test("should extract title from HTML", async () => {
@@ -26,7 +26,7 @@ describe("HtmlParser integration test", () => {
         const html = `<html><body><h1>Items</h1><ul id="products"><li><span class="name">Product 1</span><span class="price">$ 20.00</span></li><li><span class="name">Product 2</span><span class="price">$ 25.00</span></li><li><span class="name">Product 3</span><span class="price">$ 15.90</span></li><li><span class="name">Product 4</span><span class="price">$ 13.80</span></li></ul></body></html>`
         const parser = new HtmlParser(html)
 
-        const productExtractorModel = new HtmlExtrctorModel({
+        const productExtractionModel = new HtmlExtractionModel({
             name: {
                 query: css("span.name"),
                 extractor: extract("textContent"),
@@ -37,15 +37,15 @@ describe("HtmlParser integration test", () => {
             },
         })
 
-        const rootExtractorModel = new HtmlExtrctorModel({
+        const rootExtractionModel = new HtmlExtractionModel({
             products: {
                 query: css("li"),
                 multiple: true,
-                model: productExtractorModel,
+                model: productExtractionModel,
             },
         })
 
-        const data = await parser.extractModel({ query: css("ul#products"), model: rootExtractorModel })
+        const data = await parser.extractModel({ query: css("ul#products"), model: rootExtractionModel })
 
         expect(data).toEqual({
             products: [

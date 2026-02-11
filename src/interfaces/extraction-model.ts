@@ -1,3 +1,3 @@
-export interface ExtractorModel<T = any> {
+export interface ExtractionModel<T = any> {
     extract(source: string): Promise<T> | T
 }
