@@ -1,4 +1,4 @@
-# 🕷️ Xcrap Extractor: Parsing HTML and JSON using declarative models
+# 🕷️ Xcrap Extractor: Parsing HTML, JSON and Markdown using declarative models
 
 > Note: Xcrap Parser is now Xcrap Extractor
 
