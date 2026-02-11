@@ -1,8 +1,8 @@
 import * as jmespath from "jmespath"
 
-import { Parser } from "../parser"
+import { SourceParser } from "../source-parser"
 
-export class JsonParser extends Parser {
+export class JsonParser extends SourceParser {
     readonly data: any
 
     constructor(source: string) {

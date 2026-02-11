@@ -1,11 +1,11 @@
-import { extract, HtmlParser, HtmlParsingModel, css } from "../src"
+import { extract, HtmlParser, HtmlExtrctorModel, css } from "../src"
 
 describe("HtmlParser integration test", () => {
     test("should extract title from HTML", async () => {
         const html = "<html><head><title>Example</title></head></html>"
         const parser = new HtmlParser(html)
 
-        const title = await parser.parseFirst({ query: css("title"), extractor: extract("innerText") })
+        const title = await parser.extractValue({ query: css("title"), extractor: extract("innerText") })
 
         expect(title).toEqual("Example")
     })
@@ -14,63 +14,58 @@ describe("HtmlParser integration test", () => {
         const html = `<html><body><h1>Itens</h1><ul><li>Item A</li><li>Item B</li><li>Item C</li><li>Item D</li></ul></body></html>`
         const parser = new HtmlParser(html)
 
-        const data = await parser.parseMany({
+        const data = await parser.extractValues({
             query: css("ul li"),
-            extractor: extract("innerText")
+            extractor: extract("innerText"),
         })
 
-        expect(data).toEqual([
-            "Item A",
-            "Item B",
-            "Item C",
-            "Item D"
-        ])
+        expect(data).toEqual(["Item A", "Item B", "Item C", "Item D"])
     })
 
     test("should extract product list from HTML", async () => {
         const html = `<html><body><h1>Items</h1><ul id="products"><li><span class="name">Product 1</span><span class="price">$ 20.00</span></li><li><span class="name">Product 2</span><span class="price">$ 25.00</span></li><li><span class="name">Product 3</span><span class="price">$ 15.90</span></li><li><span class="name">Product 4</span><span class="price">$ 13.80</span></li></ul></body></html>`
         const parser = new HtmlParser(html)
 
-        const productParsingModel = new HtmlParsingModel({
+        const productExtractorModel = new HtmlExtrctorModel({
             name: {
                 query: css("span.name"),
-                extractor: extract("textContent")
+                extractor: extract("textContent"),
             },
             price: {
                 query: css("span.price"),
-                extractor: extract("textContent")
-            }
+                extractor: extract("textContent"),
+            },
         })
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             products: {
                 query: css("li"),
                 multiple: true,
-                model: productParsingModel
-            }
+                model: productExtractorModel,
+            },
         })
 
-        const data = await parser.extractFirst({ query: css("ul#products"), model: rootParsingModel })
+        const data = await parser.extractModel({ query: css("ul#products"), model: rootExtractorModel })
 
         expect(data).toEqual({
             products: [
                 {
                     name: "Product 1",
-                    price: "$ 20.00"
+                    price: "$ 20.00",
                 },
                 {
                     name: "Product 2",
-                    price: "$ 25.00"
+                    price: "$ 25.00",
                 },
                 {
                     name: "Product 3",
-                    price: "$ 15.90"
+                    price: "$ 15.90",
                 },
                 {
                     name: "Product 4",
-                    price: "$ 13.80"
+                    price: "$ 13.80",
                 },
-            ]
+            ],
         })
     })
 
@@ -78,12 +73,12 @@ describe("HtmlParser integration test", () => {
         const html = "<html><head></head><body></body></html>"
         const parser = new HtmlParser(html)
 
-        const data = await parser.parseFirst({
+        const data = await parser.extractValue({
             query: css("h1"),
             extractor: extract("innerText"),
-            default: null
+            default: null,
         })
-    
+
         expect(data).toBeNull()
     })
 })

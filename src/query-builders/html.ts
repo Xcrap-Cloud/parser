@@ -6,13 +6,13 @@ export type BuildedQuery = {
 export function css(query: string): BuildedQuery {
     return {
         value: query,
-        type: "css"
+        type: "css",
     }
 }
 
 export function xpath(query: string): BuildedQuery {
     return {
         value: query,
-        type: "xpath"
+        type: "xpath",
     }
 }

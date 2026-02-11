@@ -13,9 +13,9 @@ export function selectFirstElement(query: BuildedQuery, root: HTMLElement) {
             locator: {},
             errorHandler: {
                 warning: () => {},
-            }
+            },
         }).parseFromString(root.toString())
-        
+
         const elements = xpathLib.select(query.value, doc) as Node[]
 
         if (!elements || elements.length === 0) {

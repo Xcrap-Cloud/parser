@@ -31,7 +31,7 @@ const htmlProperties = [
     "rawText",
 ]
 
-export type HtmlProperty = 
+export type HtmlProperty =
     | "innerText"
     | "textContent"
     | "text"
@@ -110,10 +110,10 @@ export const propertyExtractors: Record<HtmlProperty, (element: HTMLElement) => 
 
 export function extract<T extends HtmlProperty | HtmlAttribute, R = string>(
     key: T,
-    isAttribute: boolean = false
+    isAttribute: boolean = false,
 ): ExtractorFunction<R | undefined> {
     return (element: HTMLElement): R => {
-        if (isAttribute || !(htmlProperties.includes(key))) {
+        if (isAttribute || !htmlProperties.includes(key)) {
             return element.getAttribute(key) as R
         }
 
@@ -180,7 +180,7 @@ export type FromNextOrPreviousElementSiblingOptions = {
 
 export const fromNextElementSibling = (
     extractor: ExtractorFunction,
-    { shouldExists }: FromNextOrPreviousElementSiblingOptions = { shouldExists: true }
+    { shouldExists }: FromNextOrPreviousElementSiblingOptions = { shouldExists: true },
 ): ExtractorFunction => {
     return (element) => {
         const nextElementSibling = element.nextElementSibling
@@ -199,7 +199,7 @@ export const fromNextElementSibling = (
 
 export const fromPreviousElementSibling = (
     extractor: ExtractorFunction,
-    { shouldExists }: FromNextOrPreviousElementSiblingOptions = { shouldExists: true }
+    { shouldExists }: FromNextOrPreviousElementSiblingOptions = { shouldExists: true },
 ): ExtractorFunction => {
     return (element) => {
         const previousElementSibling = element.previousElementSibling
@@ -216,19 +216,16 @@ export const fromPreviousElementSibling = (
     }
 }
 
-export type RegexExtractor = (
-    pattern: RegExp,
-    index?: number
-) => ExtractorFunction<string | string[]>
+export type RegexExtractor = (pattern: RegExp, index?: number) => ExtractorFunction<string | string[]>
 
 export const matchRegexFrom = (
     extractor: ExtractorFunction<string | undefined>,
     pattern: RegExp,
-    index?: number
+    index?: number,
 ): ExtractorFunction<string | string[] | undefined> => {
     return (element) => {
         const value = extractor(element) ?? ""
-        const matches = Array.from(value.matchAll(pattern), match => match[1] ?? match[0])
+        const matches = Array.from(value.matchAll(pattern), (match) => match[1] ?? match[0])
         return index !== undefined ? matches[index] : matches
     }
 }

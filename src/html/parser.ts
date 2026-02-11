@@ -1,58 +1,57 @@
 import htmlParser, { HTMLElement, Options as NodeHtmlOptions } from "node-html-parser"
 
 import { selectFirstElement, selectManyElements } from "../utils"
-import { ParsingModel } from "../parsing-model-interface"
+import { ExtractorModel } from "../interfaces/extractor-model"
 import { HTMLElementNotFoundError } from "../errors"
-import { ExtractorFunction } from "./extractors"
 import { BuildedQuery } from "../query-builders"
-import { Parser } from "../parser"
+import { ExtractorFunction } from "./extractors"
+import { SourceParser } from "../source-parser"
 
-export type ParseManyOptions = {
+export type ExtractValuesOptions = {
     query: BuildedQuery
     extractor: ExtractorFunction
     limit?: number
 }
 
-export type ParseFirstOptions = {
+export type ExtractValueOptions = {
     query?: BuildedQuery
     extractor: ExtractorFunction
     default?: string | null
 }
 
-export type ExtractFirstOptions = {
+export type ExtractModelOptions<T = any> = {
     query?: BuildedQuery
-    model: ParsingModel
+    model: ExtractorModel<T>
 }
 
-export type ExtractManyOptions = {
+export type ExtractModelsOptions<T = any> = {
     query: BuildedQuery
-    model: ParsingModel
+    model: ExtractorModel<T>
     limit?: number
 }
 
 export const nodeHtmlParserOptions = {
     blockTextElements: {
         script: true,
-		noscript: true,
-		style: true,
-		code: true
-    }
+        noscript: true,
+        style: true,
+        code: true,
+    },
 } satisfies NodeHtmlOptions
 
-export class HtmlParser extends Parser {
+export class HtmlParser extends SourceParser {
     readonly root: HTMLElement
 
-    constructor(readonly source: string, options: NodeHtmlOptions = nodeHtmlParserOptions) {
+    constructor(
+        readonly source: string,
+        options: NodeHtmlOptions = nodeHtmlParserOptions,
+    ) {
         super(source)
 
         this.root = htmlParser.parse(source, options)
     }
 
-    async parseMany({
-        query,
-        extractor,
-        limit
-    }: ParseManyOptions): Promise<(string | undefined)[]> {
+    async extractValues({ query, extractor, limit }: ExtractValuesOptions): Promise<(string | undefined)[]> {
         const elements = selectManyElements(query, this.root)
 
         let items: (string | undefined)[] = []
@@ -66,11 +65,7 @@ export class HtmlParser extends Parser {
         return items
     }
 
-    async parseFirst({
-        query,
-        extractor,
-        default: default_
-    }: ParseFirstOptions): Promise<any | undefined | null> {
+    async extractValue({ query, extractor, default: default_ }: ExtractValueOptions): Promise<any | undefined | null> {
         let data: any | undefined | null
 
         if (query) {
@@ -92,24 +87,24 @@ export class HtmlParser extends Parser {
         return data ?? default_
     }
 
-    async extractFirst({ model, query }: ExtractFirstOptions) {
+    async extractModel<T>({ model, query }: ExtractModelOptions<T>): Promise<T> {
         const element = query ? selectFirstElement(query, this.root) : this.root
 
         if (!element) {
             throw new HTMLElementNotFoundError(query)
         }
 
-        return await model.parse(element.outerHTML)
+        return await model.extract(element.outerHTML)
     }
 
-    async extractMany({ model, query, limit }: ExtractManyOptions) {
+    async extractModels<T>({ model, query, limit }: ExtractModelsOptions<T>): Promise<T[]> {
         const elements = selectManyElements(query, this.root)
 
         let dataList: any[] = []
 
         for (const element of elements) {
             if (limit != undefined && dataList.length >= limit) break
-            const data = await model.parse(element.outerHTML)
+            const data = await model.extract(element.outerHTML)
             dataList.push(data)
         }
 

@@ -1,17 +1,14 @@
 import he from "he"
 
+import { HtmlExtrctorModel, HtmlExtrctorModelShape, InferHtmlShape } from "../html"
 import { markdownIt } from "./constants"
-import { HtmlParser } from "../html"
 
-export class MarkdownParser extends HtmlParser {
-    readonly markdownSource: string
-
-    constructor(source: string) {
+export class MarkdownExtractorModel<S extends HtmlExtrctorModelShape> extends HtmlExtrctorModel<S> {
+    async extract(source: string): Promise<InferHtmlShape<S>> {
         const htmlSource = markdownIt.render(source)
         const decodedSource = he.decode(htmlSource).replace(/\u00A0/g, " ")
-        super(
+        return await super.extract(
             `<!DOCTYPE html><html lang="en"><head><title>Markdown Document</title></head><body>${decodedSource}</body></html>`,
         )
-        this.markdownSource = source
     }
 }

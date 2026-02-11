@@ -2,7 +2,7 @@ import { BuildedQuery } from "./query-builders"
 
 export class HTMLElementNotFoundError extends Error {
     constructor(query?: BuildedQuery) {
-        super(`Element with query "${JSON.stringify(query) || 'no query provided'}" not found`)
+        super(`Element with query "${JSON.stringify(query) || "no query provided"}" not found`)
         this.name = "HTMLElementNotFoundError"
     }
 }

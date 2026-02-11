@@ -1,7 +1,5 @@
-import { JsonParsingModel } from "../src/json/parsing-model"
-import { HtmlParsingModel } from "../src/html/parsing-model"
+import { css, HtmlExtrctorModel, JsonExtractorModel, JsonParser } from "../src"
 import { extractInnerText } from "../src/html/extractors"
-import { css, JsonParser } from "../src"
 
 describe("JsonParser integration test", () => {
     test("should extract simple value from JSON", () => {
@@ -21,47 +19,45 @@ describe("JsonParser integration test", () => {
     })
 
     test("should return null for non-existing property", () => {
-        const json = JSON.stringify({ "user": { "name": "Marcuth" } })
+        const json = JSON.stringify({ user: { name: "Marcuth" } })
         const parser = new JsonParser(json)
 
         expect(parser.extract("user.age")).toBeNull()
     })
 })
 
-describe("JsonParsingModel com model HtmlParsingModel", () => {
+describe("JsonExtractorModel com model HtmlExtrctorModel", () => {
     test("deve extrair HTML de string JSON com sucesso", async () => {
         const source = '{ "key": "<p>text</p>" }'
-        const parsingModel = new JsonParsingModel({
+        const extractorModel = new JsonExtractorModel({
             text: {
                 query: "key",
-                model: new HtmlParsingModel({
+                model: new HtmlExtrctorModel({
                     text: {
                         query: css("p"),
-                        extractor: extractInnerText
-                    }
-                })
-            }
+                        extractor: extractInnerText,
+                    },
+                }),
+            },
         })
-        const result = await parsingModel.parse(source)
+        const result = await extractorModel.extract(source)
         expect(result.text).toEqual({ text: "text" })
     })
 
-    test("deve lançar erro se valor não for string ao usar model HtmlParsingModel", async () => {
+    test("deve lançar erro se valor não for string ao usar model HtmlExtrctorModel", async () => {
         const source = '{ "key": { "xpto": "text" } }'
-        const parsingModel = new JsonParsingModel({
+        const extractorModel = new JsonExtractorModel({
             text: {
                 query: "key",
-                model: new HtmlParsingModel({
+                model: new HtmlExtrctorModel({
                     text: {
                         query: css("p"),
-                        extractor: extractInnerText
-                    }
-                })
-            }
+                        extractor: extractInnerText,
+                    },
+                }),
+            },
         })
 
-        await expect(parsingModel.parse(source)).rejects.toThrow(
-            /Expected a string for model parsing/
-        )
+        await expect(extractorModel.extract(source)).rejects.toThrow(/Expected a string for model parsing/)
     })
 })

@@ -1,18 +1,17 @@
+import { xpath, extract, HtmlExtrctorModel } from "../src"
 
-import { xpath, extract, HtmlParsingModel, JsonParsingModel } from "../src"
-
-describe("HtmlParsingModel with XPath integration test", () => {
+describe("HtmlExtractorModel with XPath integration test", () => {
     test("should extract title from HTML using XPath", async () => {
         const html = "<html><head><title>Example XPath</title></head></html>"
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             title: {
                 query: xpath("//title"),
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({ title: "Example XPath" })
     })
@@ -20,14 +19,14 @@ describe("HtmlParsingModel with XPath integration test", () => {
     test("should extract attribute from HTML using XPath", async () => {
         const html = `<html><body><a href="https://example.com" class="link">Link</a></body></html>`
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             linkHref: {
                 query: xpath("//a[@class='link']"),
-                extractor: extract("href")
-            }
+                extractor: extract("href"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({ linkHref: "https://example.com" })
     })
@@ -35,22 +34,18 @@ describe("HtmlParsingModel with XPath integration test", () => {
     test("should extract multiple items from HTML using XPath", async () => {
         const html = `<html><body><h1>Items</h1><ul><li>Item A</li><li>Item B</li><li>Item C</li></ul></body></html>`
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             items: {
                 query: xpath("//li"),
                 multiple: true,
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({
-            items: [
-                "Item A",
-                "Item B",
-                "Item C"
-            ]
+            items: ["Item A", "Item B", "Item C"],
         })
     })
 
@@ -71,53 +66,53 @@ describe("HtmlParsingModel with XPath integration test", () => {
             </body>
         </html>`
 
-        const productParsingModel = new HtmlParsingModel({
+        const productExtractorModel = new HtmlExtrctorModel({
             name: {
                 query: xpath(".//span[@class='name']"),
-                extractor: extract("textContent")
+                extractor: extract("textContent"),
             },
             price: {
                 query: xpath(".//span[@class='price']"),
-                extractor: extract("textContent")
-            }
+                extractor: extract("textContent"),
+            },
         })
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             products: {
                 query: xpath("//div[contains(@class, 'product') and not(contains(@class, 'product-list'))]"),
                 multiple: true,
-                model: productParsingModel
-            }
+                model: productExtractorModel,
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({
             products: [
                 {
                     name: "Product X",
-                    price: "$ 10.00"
+                    price: "$ 10.00",
                 },
                 {
                     name: "Product Y",
-                    price: "$ 20.00"
-                }
-            ]
+                    price: "$ 20.00",
+                },
+            ],
         })
     })
 
     test("should handle missing elements with default value using XPath", async () => {
         const html = "<html><body></body></html>"
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             missing: {
                 query: xpath("//h1"),
                 default: "Not Found",
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({ missing: "Not Found" })
     })
@@ -135,14 +130,14 @@ describe("HtmlParsingModel with XPath integration test", () => {
         </html>`
 
         // Select the second paragraph
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             secondPara: {
                 query: xpath("//div[@id='container']/p[2]"),
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({ secondPara: "Second Paragraph" })
     })

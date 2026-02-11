@@ -5,7 +5,7 @@ describe("HtmlParser integration test", () => {
         const markdown = "# Example"
         const parser = new MarkdownParser(markdown)
 
-        const heading = await parser.parseFirst({ query: css("h1#example"), extractor: extract("innerText") })
+        const heading = await parser.extractValue({ query: css("h1#example"), extractor: extract("innerText") })
 
         expect(heading).toEqual("Example")
     })
@@ -14,24 +14,19 @@ describe("HtmlParser integration test", () => {
         const markdown = `# Itens\n\n- Item A\n- Item B\n- Item C\n- Item D`
         const parser = new MarkdownParser(markdown)
 
-        const data = await parser.parseMany({
+        const data = await parser.extractValues({
             query: css("ul li"),
-            extractor: extract("innerText")
+            extractor: extract("innerText"),
         })
 
-        expect(data).toEqual([
-            "Item A",
-            "Item B",
-            "Item C",
-            "Item D"
-        ])
+        expect(data).toEqual(["Item A", "Item B", "Item C", "Item D"])
     })
 
     test("should suppoort HTML Tags", async () => {
         const markdown = `<h1>Example</h1>`
         const parser = new MarkdownParser(markdown)
 
-        const heading = await parser.parseFirst({ query: css("h1"), extractor: extract("innerText") })
+        const heading = await parser.extractValue({ query: css("h1"), extractor: extract("innerText") })
 
         expect(heading).toEqual("Example")
     })

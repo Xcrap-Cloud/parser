@@ -1,17 +1,17 @@
-import { css, extract, HtmlParsingModel, JsonParsingModel } from "../src"
+import { css, extract, HtmlExtrctorModel, JsonExtractorModel } from "../src"
 
-describe("HtmlParsingModel integration test", () => {
+describe("HtmlExtractorModel integration test", () => {
     test("should extract title from HTML", async () => {
         const html = "<html><head><title>Example</title></head></html>"
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             title: {
                 query: css("title"),
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({ title: "Example" })
     })
@@ -19,119 +19,114 @@ describe("HtmlParsingModel integration test", () => {
     test("should extract multiple items from HTML", async () => {
         const html = `<html><body><h1>Itens</h1><ul><li>Item A</li><li>Item B</li><li>Item C</li><li>Item D</li></ul></body></html>`
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             items: {
                 query: css("li"),
                 multiple: true,
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
 
-        const data = await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({
-            items: [
-                "Item A",
-                "Item B",
-                "Item C",
-                "Item D"
-            ]
+            items: ["Item A", "Item B", "Item C", "Item D"],
         })
     })
 
     test("should extract product list from HTML", async () => {
         const html = `<html><body><h1>Items</h1><ul id="products"><li><span class="name">Product 1</span><span class="price">$ 20.00</span></li><li><span class="name">Product 2</span><span class="price">$ 25.00</span></li><li><span class="name">Product 3</span><span class="price">$ 15.90</span></li><li><span class="name">Product 4</span><span class="price">$ 13.80</span></li></ul></body></html>`
 
-        const productParsingModel = new HtmlParsingModel({
+        const productExtractorModel = new HtmlExtrctorModel({
             name: {
                 query: css("span.name"),
-                extractor: extract("textContent")
+                extractor: extract("textContent"),
             },
             price: {
                 query: css("span.price"),
-                extractor: extract("textContent")
-            }
+                extractor: extract("textContent"),
+            },
         })
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             products: {
                 query: css("li"),
                 multiple: true,
-                model: productParsingModel
-            }
+                model: productExtractorModel,
+            },
         })
 
-        const data = await await rootParsingModel.parse(html)
+        const data = await rootExtractorModel.extract(html)
 
         expect(data).toEqual({
             products: [
                 {
                     name: "Product 1",
-                    price: "$ 20.00"
+                    price: "$ 20.00",
                 },
                 {
                     name: "Product 2",
-                    price: "$ 25.00"
+                    price: "$ 25.00",
                 },
                 {
                     name: "Product 3",
-                    price: "$ 15.90"
+                    price: "$ 15.90",
                 },
                 {
                     name: "Product 4",
-                    price: "$ 13.80"
+                    price: "$ 13.80",
                 },
-            ]
+            ],
         })
     })
 
     test("should extract user data from HTML", async () => {
         const html = `<html><body><script id="user-data" type="application/json">{ "name": "Marcuth", "username": "marcuth", "age": 19 }</script></body></html>`
 
-        const userParsingModel = new JsonParsingModel({
+        const userExtractorModel = new JsonExtractorModel({
             username: {
-                query: "username"
+                query: "username",
             },
             name: {
-                query: "name"
+                query: "name",
             },
             age: {
-                query: "age"
-            }
+                query: "age",
+            },
         })
 
-        const rootParsingModel = new HtmlParsingModel({
+        const rootExtractorModel = new HtmlExtrctorModel({
             userData: {
                 query: css("script[type='application/json'][id='user-data']"),
                 extractor: extract("innerText"),
-                model: userParsingModel
-            }
+                model: userExtractorModel,
+            },
         })
 
-        const data = await await rootParsingModel.parse(html)
+        const data = await await rootExtractorModel.extract(html)
 
         expect(data).toEqual({
             userData: {
                 username: "marcuth",
                 name: "Marcuth",
-                age: 19
-            }
+                age: 19,
+            },
         })
     })
 
     test("should return deafult value when extracting a non-existing element", async () => {
         const html = "<html><head></head><body></body></html>"
-    
-        const rootParsingModel = new HtmlParsingModel({
+
+        const rootExtractorModel = new HtmlExtrctorModel({
             missingElement: {
                 query: css("h1"),
                 default: null,
-                extractor: extract("innerText")
-            }
+                extractor: extract("innerText"),
+            },
         })
-    
-        const data = await rootParsingModel.parse(html)
-    
+
+        const data = await rootExtractorModel.extract(html)
+
         expect(data).toEqual({ missingElement: null })
     })
 })

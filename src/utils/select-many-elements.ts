@@ -13,11 +13,11 @@ export function selectManyElements(query: BuildedQuery, root: HTMLElement) {
             locator: {},
             errorHandler: {
                 warning: () => {},
-            }
+            },
         }).parseFromString(root.toString())
-        
+
         const elements = xpathLib.select(query.value, doc) as Node[]
 
-        return elements.map(element => htmlParser.parse(element.toString()).childNodes[0] as HTMLElement)
+        return elements.map((element) => htmlParser.parse(element.toString()).childNodes[0] as HTMLElement)
     }
 }
