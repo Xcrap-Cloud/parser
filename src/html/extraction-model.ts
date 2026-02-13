@@ -18,6 +18,7 @@ export type HtmlExtractionModelShapeBaseValue = {
 export type HtmlExtractionModelShapeNestedValue = {
     query: BuildedQuery
     limit?: number
+    default?: any | any[]
     multiple?: boolean
     model: ExtractionModel
     extractor?: ExtractorFunction
@@ -115,7 +116,11 @@ export class HtmlExtractionModel<S extends HtmlExtractionModelShape> implements 
             const element = selectFirstElement(value.query, root)
 
             if (!element) {
-                throw new HTMLElementNotFoundError(value.query)
+                if (value.default === undefined) {
+                    throw new HTMLElementNotFoundError(value.query)
+                }
+
+                return value.default
             }
 
             const source = value.extractor ? ((await value.extractor(element)) as string) : element.outerHTML
